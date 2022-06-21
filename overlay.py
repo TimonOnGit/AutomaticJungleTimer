@@ -13,9 +13,9 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
 from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThread, QCoreApplication
 
 class CustomEvent(QObject):
-        updateValuesEvent = pyqtSignal()
-        finishedEvent = pyqtSignal()
-        clockUpdate = pyqtSignal()
+    updateValuesEvent = pyqtSignal()
+    finishedEvent = pyqtSignal()
+    clockUpdate = pyqtSignal()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -53,43 +53,41 @@ class MainWindow(QMainWindow):
         self.initVals()
 
     def initVals(self):
+        '''
+        Initializes all labels with their start values. Also reads in the times from comp_times to compare to.
+        Because labels have images they are html formatted. Due to this one cannot use \t so instead mult_space func is used
+        which creates multiple html spaces.
+        '''
         with open ('comp_times.json', 'r') as f:
             self.comp_times = json.load(f)
         for i, label in enumerate(self.labels):
             self.labels[label] = QtWidgets.QLabel(self)
             if label == 'header': 
-                self.labels[label].setText(f'Camp{self.mult_space_pl(4)}Rel{self.mult_space_pl(8)}Abs{self.mult_space_pl(8)}Ing{self.mult_space_pl(8)}Cmp  ')
+                self.labels[label].setText(f'Camp{mult_space_pl(4)}Rel{mult_space_pl(8)}Abs{mult_space_pl(8)}Ing{mult_space_pl(8)}Cmp  ')
                 self.labels[label].setGeometry(QtCore.QRect(0, 0, 310, 20))
             elif label == 'clock':
-                self.labels[label].setText(f'{self.mult_space_pl(10)}0:00{self.mult_space_pl(8)}0:00{self.mult_space_pl(8)}1:30{self.mult_space_pl(8)}------ ')
+                self.labels[label].setText(f'{mult_space_pl(10)}0:00{mult_space_pl(8)}0:00{mult_space_pl(8)}1:30{mult_space_pl(8)}------ ')
                 self.labels[label].setGeometry(QtCore.QRect(0, 25, 310, 20))    
             elif label == 'finished_time':
-                self.labels[label].setText(f'Finished{self.mult_space_pl(14)}------{self.mult_space_pl(6)}------{self.mult_space_pl(6)}{self.comp_times["total"]} ')
+                self.labels[label].setText(f'Finished{mult_space_pl(14)}------{mult_space_pl(6)}------{mult_space_pl(6)}{self.comp_times["total"]} ')
                 self.labels[label].setGeometry(QtCore.QRect(0, 55*i-60, 310, 20))
             else:
-                self.labels[label].setText(f"<html><img src='pics/{label}.webp'>{self.mult_space(3)}0:00{self.mult_space(7)}0:00{self.mult_space(7)}0:00{self.mult_space(7)}{self.comp_times[label]} </html>")
+                self.labels[label].setText(f"<html><img src='pics/{label}.webp'>{mult_space(3)}0:00{mult_space(7)}0:00{mult_space(7)}0:00{mult_space(7)}{self.comp_times[label]} </html>")
                 self.labels[label].setGeometry(QtCore.QRect(0, 55*i-60, 310, 50))
 
             self.labels[label].setFont(QtGui.QFont('Arial', 13))
             
             
-    def mult_space(self, amt):
-        sp = ''
-        for i in range(amt):
-            sp += '&nbsp;'
-        return sp
 
-    def mult_space_pl(self, amt):
-        sp = ''
-        for i in range(amt):
-            sp += ' '
-        return sp
 
     def updateVals(self):
+        '''
+        Will get called every time a camp is finished. Updates the time for the specific camp.
+        '''
         for label in self.labels:
             if label in ('header', 'clock', 'finished_time'):
                 continue
-            self.labels[label].setText(f"<html><img src='pics/{label}.webp'>{self.mult_space(3)}{rel_times[label]}{self.mult_space(7)}{abs_times[label]}{self.mult_space(7)}{game_times[label]}{self.mult_space(7)}{self.comp_times[label]} </html>")
+            self.labels[label].setText(f"<html><img src='pics/{label}.webp'>{mult_space(3)}{rel_times[label]}{mult_space(7)}{abs_times[label]}{mult_space(7)}{game_times[label]}{mult_space(7)}{self.comp_times[label]} </html>")
             if game_times[label] != "0:00":
                 if cmp_time_str(game_times[label], self.comp_times[label]):
                     self.labels[label].setStyleSheet("background:rgba(163, 75, 75, 180);")    
@@ -97,14 +95,21 @@ class MainWindow(QMainWindow):
                     self.labels[label].setStyleSheet("background:rgba(75, 163, 75, 180);")                 
 
     def updateClock(self):
+        '''
+        Will get called every second. This updates all the clocks and adds 1 second to them.
+        '''
         if game_times['total'] != '0:00':
             return
-        self.labels['clock'].setText(f'{self.mult_space_pl(12)}{curr_rel_time.toString("m:ss")}{self.mult_space_pl(7)}{curr_abs_time.toString("m:ss")}{self.mult_space_pl(7)}{curr_game_time.toString("m:ss")}{self.mult_space_pl(6)}------ ')
+        self.labels['clock'].setText(f'{mult_space_pl(12)}{curr_rel_time.toString("m:ss")}{mult_space_pl(7)}{curr_abs_time.toString("m:ss")}{mult_space_pl(7)}{curr_game_time.toString("m:ss")}{mult_space_pl(6)}------ ')
     
     def updateFinish(self):
+        '''
+        will get called when the clear is finished. Updates the last label (the finished label) to represent
+        the times when the clear was finished.
+        '''
         game_times['total'] = curr_game_time.toString("m:ss")
         abs_times['total'] = curr_abs_time.toString("m:ss")
-        self.labels['finished_time'].setText(f'Finished{self.mult_space_pl(14)}{abs_times["total"]}{self.mult_space_pl(7)}{game_times["total"]}{self.mult_space_pl(7)}{self.comp_times["total"]}')
+        self.labels['finished_time'].setText(f'Finished{mult_space_pl(14)}{abs_times["total"]}{mult_space_pl(7)}{game_times["total"]}{mult_space_pl(7)}{self.comp_times["total"]}')
         if cmp_time_str(game_times['total'], self.comp_times["total"]):
             self.labels["finished_time"].setStyleSheet("background:rgba(163, 75, 75, 180);")    
         else:
@@ -112,6 +117,10 @@ class MainWindow(QMainWindow):
         self.jsonfy_times()
     
     def jsonfy_times(self):
+        '''
+        Reads old times and appends new times to them. Then creates a json out of it. In case
+        no file is found / file is empty a new file is craeted.
+        '''
         new_times = []
         try:
             with open('times.json', 'r') as f:
@@ -125,12 +134,17 @@ class MainWindow(QMainWindow):
             json.dump(new_times, f)
 
 class RepeatTimer(Timer):
+    '''
+    Class to create a timer that does a function every x seconds.
+    '''
     def run(self):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)
 
 class TimerThread(QThread):
-
+    '''
+    Worker thread that does the calculation of camp killing.
+    '''
     def __init__(self):
         super().__init__()
         self.last_gold = 0
@@ -166,6 +180,12 @@ class TimerThread(QThread):
         self.rel_timer = time.time()
 
     def find_camp(self, gold):
+        '''
+        When the player earns more than 3 gold in one timeframe they had some income.
+        This income will then get stored in curr_buffer until a camp is finished. Also
+        the last gold earn is always saved in last_gold.
+        Calls function that determine if a camp was actually killed.
+        '''
         if gold < 3:
             return
         self.last_gold = gold
@@ -175,11 +195,23 @@ class TimerThread(QThread):
         self.check_finished()
 
     def check_finished(self):
+        '''
+        Will signal the overlay that the clear is finished. Sets killed_camps to 0 so the function
+        does not get called again.
+        '''
         if self.killed_camps == 6:
             self.killed_camps = 0
             mywindow.sig.finishedEvent.emit()
 
     def camp_checker(self):
+        '''
+        Checks every unique gold value a camp can have. When the player gains gold it can only come 
+        from certain camps. A buffer of 1 gold is implemented because the killing of the monster can 
+        align with the passive gold.
+        '''
+        # This is a special case: Krugs should count as finished when only one small krug is still alive. 
+        # However when this krug is killed this gold should not be in the buffer because it is an assett 
+        # from krugs.
         if self.krugs_last == True:   
             self.krugs_last = False
             if self.last_gold in (13, 14):
@@ -198,7 +230,10 @@ class TimerThread(QThread):
         if self.last_gold not in (7, 8, 13, 14, 15, 20, 21, 22, 26, 27, 28, 32, 33, 34, 39, 40, 41, 45, 46, 47, 52, 53, 59, 60, 65, 66, 78, 79):
             self.could_be['krugs'] = False
 
-    def check_camp_killed(self):        
+    def check_camp_killed(self):     
+        '''
+        Checks if a camp is killed by checking if the gold gains fit the camp and the buffer fits it as well.
+        '''   
         if self.could_be['wolves'] and not self.killed['wolves'] and self.curr_buffer >= 95 and self.curr_buffer < 100:
             self.camp_killed('wolves')
         elif self.could_be['gromp'] and not self.killed['gromp'] and self.curr_buffer >= 90 and self.curr_buffer < 95:
@@ -215,6 +250,10 @@ class TimerThread(QThread):
             self.krugs_dead = time.time()
 
     def camp_killed(self, camp):
+        '''
+        Does multiple things when a camp is killed. Sets times in abs_times, rel_times and game_times,
+        and resets the relative timer. Also emits to the overlay to update the times for said camp.
+        '''
         global curr_rel_time
         abs_time = int(time.time() - self.start_timer)
         abs_time_str = f'{abs_time//60}:{abs_time%60:02}'
@@ -234,7 +273,29 @@ class TimerThread(QThread):
             self.could_be[label] = True
         mywindow.sig.updateValuesEvent.emit()
 
+def mult_space(amt):
+    '''
+    Returns amt many html spaces.
+    '''
+    sp = ''
+    for i in range(amt):
+        sp += '&nbsp;'
+    return sp
+
+def mult_space_pl(amt):
+    '''
+    Returns amt many plain text spaces.
+    '''
+    sp = ''
+    for i in range(amt):
+        sp += ' '
+    return sp
+
 def cmp_time_str(time1, time2):
+    '''
+    Compares two time strings. Returns true if the first time 
+    str is larger (greater time).
+    '''
     if time1[0] > time2[0]:
         return True
     elif time1[0] < time2[0]:
@@ -250,6 +311,9 @@ def cmp_time_str(time1, time2):
     return False
 
 def timerEvent():
+    '''
+    Will get called every second. Updates timers and emits signal to overlay.
+    '''
     global curr_rel_time
     global curr_abs_time
     global curr_game_time
@@ -303,6 +367,9 @@ if __name__ == "__main__":
     timer = RepeatTimer(0.994, timerEvent)
 
     def start_key_pressed():
+        '''
+        Key listener for start key. Works even when window is not focused.
+        '''
         try: 
             timer.start()
             print('start!')
@@ -311,10 +378,17 @@ if __name__ == "__main__":
             print('Already started. If you want to restart press 6!')
 
     def restart_key_pressed():
+        '''
+        Key listener for restart key. Works even when window is not focused.
+        '''
         print('restart!')    
         os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
 
     def exit_key_pressed():
+        '''
+        Key listener for exit key. Works even when window is not focused. Needs to be 
+        os._exit(0) because it gets called from a thread and sys.exit() only kills the thread.
+        '''
         print('exit!')
         os._exit(0)
 

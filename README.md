@@ -3,13 +3,13 @@ This is a tool to automatically track your jungle clear in practice tool. All fu
 
 # How to install?   
 You need to have python installed. If not simply download it here https://www.python.org/downloads/   
-Now download this repository. After you unzipped the file to a resonable place you need to install its requirements.  To do so you simply start the install_requirements.bat.   
+Now download this repository. After you unzipped the file to a resonable place you need to install its requirements.  To do so you simply start the `install_requirements.bat`.   
 Alternative way is to open cmd in the file directory and type `pip install -r requirements.txt`. If you don't have pip installed already, install it via `python -m ensurepip --upgrade`. It is an installer for python packages.
 
 # How to use?
 Simply start the  `start_overlay.bat` file.    
 Alternative way is to open cmd in your directory and type `python overlay.py`.   
-After you started it a small window will open that shows you current timers. To start the timer press 5 (so when you start your clear, press 5). To reset the timer press 6 (Note: After that you need to press 5 again to start, 6 simply resets the program). To close the programm press 7. All this does not have to be done in the window, you can conveniently do it while in your practice tool. 
+After you started it a small window will open that shows you current timers. To start the timer press `5` (so when you start your clear, press `5`). To reset the timer press `6` (Note: After that you need to press `5` again to start, `6` simply resets the program). To close the programm press `7`. All this does not have to be done in the window, you can conveniently do it while in your practice tool. 
 
 # Features
 You can compare your times with preset times. To do so simply change the times in `comp_times.json` to the times you want to reach. The timer will compare those with the ingame timer and mark them red if you finished them below the time and green if you finished them on time.   

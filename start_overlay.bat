@@ -1,1 +1,1 @@
-python E:\Programming\Programmieren\Python\JungleSpeedrun\overlay.py
+python C:\Users\Your\Path\Here\overlay.py

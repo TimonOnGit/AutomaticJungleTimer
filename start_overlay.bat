@@ -1,1 +1,1 @@
-python C:\Users\Your\Path\Here\overlay.py
+python overlay.py

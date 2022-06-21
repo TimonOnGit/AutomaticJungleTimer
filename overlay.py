@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
                 self.labels[label].setText(f'{self.mult_space_pl(10)}0:00{self.mult_space_pl(8)}0:00{self.mult_space_pl(8)}1:30{self.mult_space_pl(8)}------ ')
                 self.labels[label].setGeometry(QtCore.QRect(0, 25, 310, 20))    
             elif label == 'finished_time':
-                self.labels[label].setText(f'Finished{self.mult_space_pl(14)}------{self.mult_space_pl(6)}------{self.mult_space_pl(6)}------ ')
+                self.labels[label].setText(f'Finished{self.mult_space_pl(14)}------{self.mult_space_pl(6)}------{self.mult_space_pl(6)}{self.comp_times["total"]} ')
                 self.labels[label].setGeometry(QtCore.QRect(0, 55*i-60, 310, 20))
             else:
                 self.labels[label].setText(f"<html><img src='pics/{label}.webp'>{self.mult_space(3)}0:00{self.mult_space(7)}0:00{self.mult_space(7)}0:00{self.mult_space(7)}{self.comp_times[label]} </html>")
@@ -112,15 +112,16 @@ class MainWindow(QMainWindow):
         self.jsonfy_times()
     
     def jsonfy_times(self):
-        with open('times.json', 'r') as f:
-                new_times = []
-                try:
+        new_times = []
+        try:
+            with open('times.json', 'r') as f:
+                   
                     old_times = json.load(f)
                     new_times = old_times
-                except json.decoder.JSONDecodeError as e:
-                    pass
-                new_times.append(game_times)
-        with open('times.json', 'w') as f:
+        except FileNotFoundError:
+            pass
+        new_times.append(game_times)   
+        with open('times.json', 'w+') as f:
             json.dump(new_times, f)
 
 class RepeatTimer(Timer):
@@ -302,9 +303,12 @@ if __name__ == "__main__":
     timer = RepeatTimer(0.994, timerEvent)
 
     def start_key_pressed():
-        print('start!')    
-        timer.start()
-        thread.start_timer_func()
+        try: 
+            timer.start()
+            print('start!')
+            thread.start_timer_func()
+        except RuntimeError:
+            print('Already started. If you want to restart press 6!')
 
     def restart_key_pressed():
         print('restart!')    

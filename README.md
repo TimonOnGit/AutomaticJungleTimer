@@ -16,5 +16,8 @@ You can compare your times with preset times. To do so simply change the times i
 
 The program also stores your times in `times.json`. This is a list of the times you did in all your runs. The idea is to rename this file as soon as your session is over to have all of your champ runs saved. In the future I plan on creating a tool that visualizes these values. The values will NOT be overwritten instead new values will always be appended. So make sure to rename or delete the file as soon as you finished one champion.
 
+# Known Limitations
+Because of the way the jungle timer works it cannot distinguish between red and blue buff. It will simply always put the first buff onto the blue buff timer. In the documents the buffs are called `buff1` and `buff2`, `buff1` being the one you clear first.
+
 # Feedback
 I hope you are happy with this tool. If you have any remarks, ideas for feature or find any bugs please let me know on github or on Discord Timon#1853. 
